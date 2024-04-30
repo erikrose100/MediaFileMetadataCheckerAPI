@@ -7,10 +7,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using System.Threading.Tasks;
+using System.Configuration;
 using FFMpegCore;
 using FFMpegCore.Enums;
-using System.Configuration;
-using System.Linq;
 using MetadataAppConfig;
 
 namespace MediaFileMetadataCheckerAPI.Controllers
