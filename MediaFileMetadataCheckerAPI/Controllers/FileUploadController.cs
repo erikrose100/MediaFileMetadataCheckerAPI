@@ -7,8 +7,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using System.Threading.Tasks;
+using System.Configuration;
 using FFMpegCore;
 using FFMpegCore.Enums;
+using MetadataAppConfig;
 
 namespace MediaFileMetadataCheckerAPI.Controllers
 {
@@ -86,10 +88,14 @@ namespace MediaFileMetadataCheckerAPI.Controllers
 
                     if (mediaInfo is not null)
                     {
+                        HashSet<string> returnProperties = Settings.ReturnProperties.Split(";").ToHashSet();
+
                         var File = new FileUploadItem();
-                        File.Duration = mediaInfo.Duration;
-                        File.BitRate = mediaInfo.Format.BitRate;
-                        File.Format = mediaInfo.Format.FormatLongName;
+                        File.Duration = returnProperties.Contains("Duration") ? mediaInfo.Duration : null;
+                        File.BitRate =  returnProperties.Contains("BitRate") ? mediaInfo.Format.BitRate : null;
+                        File.Format = returnProperties.Contains("Format") ? mediaInfo.Format.FormatLongName : null;
+                        File.AudioStreamCount = returnProperties.Contains("AudioStreamCount") ? mediaInfo.AudioStreams.Count : null;
+                        File.HashCode = returnProperties.Contains("HashCode") ? mediaInfo.Format.GetHashCode() : null;
 
                         return Ok(File);
                     }
