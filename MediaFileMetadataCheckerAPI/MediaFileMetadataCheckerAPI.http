@@ -1,0 +1,6 @@
+@MediaFileMetadataCheckerAPI_HostAddress = http://localhost:5269
+
+GET {{MediaFileMetadataCheckerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
