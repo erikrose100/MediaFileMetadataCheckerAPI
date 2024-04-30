@@ -13,6 +13,8 @@ builder.Services.AddDbContext<FileUploadContext>(opt =>
     opt.UseInMemoryDatabase("FileUploadList"));
 // Get connection string from Environment variables
 string? connectionString = Environment.GetEnvironmentVariable("METADATA_API_CONFIG_CONNECTION_STRING");
+double? configCacheExpiration = Convert.ToDouble(Environment.GetEnvironmentVariable("METADATA_API_CONFIG_CACHE_EXPIRATION"));
+
 // Load configuration from Azure App Configuration
 builder.Configuration.AddAzureAppConfiguration(options =>
 {
@@ -21,7 +23,8 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         .Select("MetadataApp:*")
         // Configure to reload configuration if the registered sentinel key is modified
         .ConfigureRefresh(refreshOptions =>
-            refreshOptions.Register("MetadataApp:Settings:Sentinel", refreshAll: true));
+            refreshOptions.Register("MetadataApp:Settings:Sentinel", refreshAll: true)
+                .SetCacheExpiration(TimeSpan.FromHours(configCacheExpiration ?? 1)));
 });
 // Bind configuration "MetadataApp:Settings" section to the Settings object
 builder.Services.Configure<MetadataAppConfig.Settings>(builder.Configuration.GetSection("MetadataApp:Settings"));
