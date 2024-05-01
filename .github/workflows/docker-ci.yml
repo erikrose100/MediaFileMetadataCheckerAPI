@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+    # paths:
+    #   - "MediaFileMetadataCheckerAPI/**"
+
+env:
+  TEST_TAG: user/app:test
+  LATEST_TAG: user/app:latest
+  METADATA_API_CONFIG_CONNECTION_STRING: ${{ secrets.APP_CONFIG_CONNECTION_STRING }}
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and export to local images
+        uses: docker/build-push-action@v5
+        with:
+          context: "{{defaultContext}}:MediaFileMetadataCheckerAPI"
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Test running image
+        run: |
+          docker run --rm ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e METADATA_API_CONFIG_CACHE_EXPIRATION="1" --stop-timeout 30

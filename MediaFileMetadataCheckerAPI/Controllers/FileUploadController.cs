@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using System.Threading.Tasks;
@@ -21,11 +22,13 @@ namespace MediaFileMetadataCheckerAPI.Controllers
     [Route("[controller]")]
     public class FileUploadController : ControllerBase
     {
+         private readonly Settings _settings;
         private readonly ILogger<FileUploadController> _logger;
 
-        public FileUploadController(ILogger<FileUploadController> logger)
+        public FileUploadController(ILogger<FileUploadController> logger, IOptionsSnapshot<Settings> settings)
         {
             _logger = logger;
+            _settings = settings.Value;
         }
 
         /// <summary>
@@ -39,15 +42,14 @@ namespace MediaFileMetadataCheckerAPI.Controllers
         [HttpPost]
         [Route(nameof(UploadLargeFileForMetadata))]
         [ProducesResponseType(typeof(FileStreamResult), 200, "application/json")]
-        // [Produces("application/json", "application/json")]
         [DisableFormValueModelBinding]
         public async Task<IActionResult> UploadLargeFileForMetadata()
         {
             var request = HttpContext.Request;
 
-            // validation of Content-Type
-            // 1. first, it must be a form-data request
-            // 2. a boundary should be found in the Content-Type
+            // Validation of Content-Type
+            // 1. First, it must be a form-data request
+            // 2. A boundary should be found in the Content-Type
             if (!request.HasFormContentType ||
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
@@ -59,8 +61,6 @@ namespace MediaFileMetadataCheckerAPI.Controllers
             var reader = new MultipartReader(boundary, request.Body);
             var section = await reader.ReadNextSectionAsync();
 
-            // This sample try to get the first file from request and save it
-            // Make changes according to your needs in actual use
             while (section != null)
             {
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
@@ -70,11 +70,6 @@ namespace MediaFileMetadataCheckerAPI.Controllers
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
                     !string.IsNullOrEmpty(contentDisposition.FileName.Value))
                 {
-                    // Don't trust any file name, file extension, and file data from the request unless you trust them completely
-                    // Otherwise, it is very likely to cause problems such as virus uploading, disk filling, etc
-                    // In short, it is necessary to restrict and verify the upload
-                    // Here, we just use the temporary folder and a random file name
-
                     // Get the temporary folder, and combine a random file name with it
                     var fileName = Path.GetRandomFileName();
                     var saveToPath = Path.Combine(Path.GetTempPath(), fileName);
@@ -88,7 +83,8 @@ namespace MediaFileMetadataCheckerAPI.Controllers
 
                     if (mediaInfo is not null)
                     {
-                        HashSet<string> returnProperties = Settings.ReturnProperties.Split(";").ToHashSet();
+                        // Get return properties from App Config and only return configured properties
+                        HashSet<string> returnProperties = _settings.ReturnProperties.Split(";").ToHashSet();
 
                         var File = new FileUploadItem();
                         File.Duration = returnProperties.Contains("Duration") ? mediaInfo.Duration : null;
@@ -105,12 +101,9 @@ namespace MediaFileMetadataCheckerAPI.Controllers
                     }
 
                 }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-
                 section = await reader.ReadNextSectionAsync();
             }
 
-            // If the code runs to this location, it means that no files have been saved
             return BadRequest("No files data in the request.");
         }
     }

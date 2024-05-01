@@ -3,6 +3,7 @@ using MediaFileMetadataCheckerAPI.Models;
 using MediaFileMetadataCheckerAPI.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Azure.AppConfiguration.AspNetCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddDbContext<FileUploadContext>(opt =>
     opt.UseInMemoryDatabase("FileUploadList"));
 // Get connection string from Environment variables
 string? connectionString = Environment.GetEnvironmentVariable("METADATA_API_CONFIG_CONNECTION_STRING");
-double? configCacheExpiration = Convert.ToDouble(Environment.GetEnvironmentVariable("METADATA_API_CONFIG_CACHE_EXPIRATION"));
+double configCacheExpiration = Convert.ToDouble(Environment.GetEnvironmentVariable("METADATA_API_CONFIG_CACHE_EXPIRATION"));
 
 // Load configuration from Azure App Configuration
 builder.Configuration.AddAzureAppConfiguration(options =>
@@ -24,8 +25,10 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         // Configure to reload configuration if the registered sentinel key is modified
         .ConfigureRefresh(refreshOptions =>
             refreshOptions.Register("MetadataApp:Settings:Sentinel", refreshAll: true)
-                .SetCacheExpiration(TimeSpan.FromHours(configCacheExpiration ?? 1)));
+                .SetCacheExpiration(TimeSpan.FromHours(configCacheExpiration)));
 });
+// Add Azure App Configuration middleware to the container of services.
+builder.Services.AddAzureAppConfiguration();
 // Bind configuration "MetadataApp:Settings" section to the Settings object
 builder.Services.Configure<MetadataAppConfig.Settings>(builder.Configuration.GetSection("MetadataApp:Settings"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
