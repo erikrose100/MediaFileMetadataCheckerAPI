@@ -31,6 +31,7 @@ jobs:
       - name: Run Trivy scanner
         uses: aquasecurity/trivy-action@master
         with:
+          image-ref: ${{ env.TEST_TAG }}
           scan-type: image
           hide-progress: true
           output: trivy.txt
