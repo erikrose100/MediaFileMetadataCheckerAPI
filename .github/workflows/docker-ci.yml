@@ -28,6 +28,12 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Run Trivy scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: image
+          hide-progress: true
+          output: trivy.txt
       - name: Test running image
         run: |
           docker run --rm ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e METADATA_API_CONFIG_CACHE_EXPIRATION="1" --stop-timeout 30
