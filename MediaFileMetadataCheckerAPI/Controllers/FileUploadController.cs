@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using System.Threading.Tasks;
@@ -21,11 +22,13 @@ namespace MediaFileMetadataCheckerAPI.Controllers
     [Route("[controller]")]
     public class FileUploadController : ControllerBase
     {
+         private readonly Settings _settings;
         private readonly ILogger<FileUploadController> _logger;
 
-        public FileUploadController(ILogger<FileUploadController> logger)
+        public FileUploadController(ILogger<FileUploadController> logger, IOptionsSnapshot<Settings> settings)
         {
             _logger = logger;
+            _settings = settings.Value;
         }
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace MediaFileMetadataCheckerAPI.Controllers
                     if (mediaInfo is not null)
                     {
                         // Get return properties from App Config and only return configured properties
-                        HashSet<string> returnProperties = Settings.ReturnProperties.Split(";").ToHashSet();
+                        HashSet<string> returnProperties = _settings.ReturnProperties.Split(";").ToHashSet();
 
                         var File = new FileUploadItem();
                         File.Duration = returnProperties.Contains("Duration") ? mediaInfo.Duration : null;
