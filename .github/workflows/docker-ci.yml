@@ -38,9 +38,3 @@ jobs:
         shell: pwsh  
         run: |
           docker run --rm -it ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CACHE_EXPIRATION=1 -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e ASPNETCORE_ENVIRONMENT=Development -v ${HOME}/.aspnet/https:/https/ --stop-timeout 30
-
-        #   - name: Test running image
-        # run: |
-        #   export METADATA_API_CONFIG_CONNECTION_STRING=${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}
-        #   export METADATA_API_CONFIG_CACHE_EXPIRATION=1
-        #   docker run --rm ${{ env.TEST_TAG }} -e ASPNETCORE_ENVIRONMENT=Development -v ${HOME}/.aspnet/https:/https/ --stop-timeout 30
