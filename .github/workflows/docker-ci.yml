@@ -34,7 +34,6 @@ jobs:
           image-ref: ${{ env.TEST_TAG }}
           scan-type: image
           hide-progress: true
-          output: trivy.txt
       - name: Test running image
         run: |
           docker run --rm ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e METADATA_API_CONFIG_CACHE_EXPIRATION="1" --stop-timeout 30
