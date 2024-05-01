@@ -10,6 +10,7 @@ on:
 env:
   TEST_TAG: user/app:test
   LATEST_TAG: user/app:latest
+  METADATA_API_CONFIG_CONNECTION_STRING: ${{ secrets.APP_CONFIG_CONNECTION_STRING }}
 
 jobs:
   docker:
@@ -28,7 +29,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Test running image
-        env:
-          METADATA_API_CONFIG_CONNECTION_STRING: ${{ secrets.APP_CONFIG_CONNECTION_STRING }}
         run: |
           docker run --rm ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CONNECTION_STRING=$METADATA_API_CONFIG_CONNECTION_STRING -e METADATA_API_CONFIG_CACHE_EXPIRATION=1 --stop-timeout 30
