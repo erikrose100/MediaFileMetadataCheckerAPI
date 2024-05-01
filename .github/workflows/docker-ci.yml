@@ -4,8 +4,8 @@ on:
   push:
     branches-ignore:
       - "main"
-    paths:
-      - "MediaFileMetadataCheckerAPI/**"
+    # paths:
+    #   - "MediaFileMetadataCheckerAPI/**"
 
 env:
   TEST_TAG: user/app:test
@@ -15,8 +15,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -24,7 +22,7 @@ jobs:
       - name: Build and export to local images
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: "{{defaultContext}}:MediaFileMetadataCheckerAPI"
           load: true
           tags: ${{ env.TEST_TAG }}
       - name: Test running image
