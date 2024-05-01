@@ -28,6 +28,13 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Test running image
-        run: |
-          docker run --rm ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e METADATA_API_CONFIG_CACHE_EXPIRATION="1" --stop-timeout 30
+      - name: Run Trivy scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.TEST_TAG }}
+          scan-type: image
+          hide-progress: true
+      # - name: Test running image
+      #   shell: pwsh  
+      #   run: |
+      #     docker run --rm ${{ env.TEST_TAG }} -e METADATA_API_CONFIG_CACHE_EXPIRATION=1 -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e ASPNETCORE_ENVIRONMENT=Development -v ${HOME}/.aspnet/https:/https/ --stop-timeout 30
