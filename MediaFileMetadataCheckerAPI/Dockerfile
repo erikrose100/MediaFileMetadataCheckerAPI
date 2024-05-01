@@ -16,4 +16,8 @@ COPY --from=build-env /App/out .
 RUN apt-get update \
     && apt-get install -y ffmpeg libgdiplus \
     && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=secret,id=METADATA_API_CONFIG_CONNECTION_STRING \
+    cat /run/secrets/METADATA_API_CONFIG_CONNECTION_STRING
+RUN --mount=type=secret,id=METADATA_API_CONFIG_CACHE_EXPIRATION \
+    cat /run/secrets/METADATA_API_CONFIG_CACHE_EXPIRATION
 ENTRYPOINT ["dotnet", "MediaFileMetadataCheckerAPI.dll"]
