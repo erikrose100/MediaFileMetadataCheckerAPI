@@ -25,6 +25,8 @@ jobs:
           context: "{{defaultContext}}:MediaFileMetadataCheckerAPI"
           load: true
           tags: ${{ env.TEST_TAG }}
+          build-args: |
+            "METADATA_API_CONFIG_CONNECTION_STRING=${{ secrets.APP_CONFIG_CONNECTION_STRING }}"
       - name: Test running image
         run: |
           docker run --rm ${{ env.TEST_TAG }}
