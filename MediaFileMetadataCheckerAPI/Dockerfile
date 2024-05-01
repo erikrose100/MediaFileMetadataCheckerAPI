@@ -10,8 +10,6 @@ RUN dotnet publish -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
-ARG METADATA_API_CONFIG_CONNECTION_STRING
-ARG METADATA_API_CONFIG_CACHE_EXPIRATION
 WORKDIR /App
 COPY --from=build-env /App/out .
 # Install ffmpeg/ffprobe dependencies
