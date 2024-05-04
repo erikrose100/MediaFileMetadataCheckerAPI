@@ -86,12 +86,13 @@ namespace MediaFileMetadataCheckerAPI.Controllers
                         // Get return properties from App Config and only return configured properties
                         HashSet<string> returnProperties = _settings.ReturnProperties.Split(";").ToHashSet();
 
-                        var File = new FileUploadItem();
-                        File.Duration = returnProperties.Contains("Duration") ? mediaInfo.Duration : null;
-                        File.BitRate =  returnProperties.Contains("BitRate") ? mediaInfo.Format.BitRate : null;
-                        File.Format = returnProperties.Contains("Format") ? mediaInfo.Format.FormatLongName : null;
-                        File.AudioStreamCount = returnProperties.Contains("AudioStreamCount") ? mediaInfo.AudioStreams.Count : null;
-                        File.HashCode = returnProperties.Contains("HashCode") ? mediaInfo.Format.GetHashCode() : null;
+                        var File = new FileUploadItem {
+                            Duration = returnProperties.Contains("Duration") ? mediaInfo.Duration : null,
+                            BitRate =  returnProperties.Contains("BitRate") ? mediaInfo.Format.BitRate : null,
+                            Format = returnProperties.Contains("Format") ? mediaInfo.Format.FormatLongName : null,
+                            AudioStreamCount = returnProperties.Contains("AudioStreamCount") ? mediaInfo.AudioStreams.Count : null,
+                            HashCode = returnProperties.Contains("HashCode") ? mediaInfo.Format.GetHashCode() : null
+                        };
 
                         return Ok(File);
                     }
