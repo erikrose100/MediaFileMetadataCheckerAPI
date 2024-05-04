@@ -1,16 +1,9 @@
 using MediaFileMetadataCheckerAPI.Models;
-// using MediaFileMetadataCheckerAPI.Controllers;
-// using MetadataAppConfig;
 using Moq;
-// using Microsoft.Extensions.Options;
-// using Microsoft.Extensions.Logging;
-// using System.Web;
-// using Microsoft.AspNetCore.Http;
-
 
 namespace MediaFileMetadataCheckerAPI.Tests;
 
-public class FileUploadControllerTest
+public class FileUploadModelTest
 {
     [Fact]
     public void FiledUploadItemTest()
