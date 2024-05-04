@@ -4,8 +4,8 @@ on:
   push:
     branches-ignore:
       - "main"
-    # paths:
-    #   - "Terraform/**"
+    paths:
+      - "Terraform/**"
 
 env:
   tf_actions_working_dir: Terraform/
