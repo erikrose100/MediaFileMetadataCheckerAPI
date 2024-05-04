@@ -4,8 +4,8 @@ on:
   push:
     branches-ignore:
       - "main"
-    # paths:
-    #   - "MediaFileMetadataCheckerAPI/**"
+    paths:
+      - "MediaFileMetadataCheckerAPI/**"
 
 env:
   TEST_TAG: user/app:test
