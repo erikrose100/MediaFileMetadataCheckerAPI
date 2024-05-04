@@ -36,4 +36,4 @@ jobs:
           hide-progress: true
       - name: Test running image
         run: |
-          timeout 30 docker run --rm -e METADATA_API_CONFIG_CACHE_EXPIRATION=1 -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e ASPNETCORE_ENVIRONMENT=Development -v ${HOME}/.aspnet/https:/https/ --stop-timeout 30 ${{ env.TEST_TAG }}
+          timeout --preserve-status 30 docker run --rm -e METADATA_API_CONFIG_CACHE_EXPIRATION=1 -e METADATA_API_CONFIG_CONNECTION_STRING="${{ env.METADATA_API_CONFIG_CONNECTION_STRING }}" -e ASPNETCORE_ENVIRONMENT=Development -v ${HOME}/.aspnet/https:/https/ --stop-timeout 30 ${{ env.TEST_TAG }}
