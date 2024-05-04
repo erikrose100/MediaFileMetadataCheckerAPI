@@ -1,3 +1,4 @@
+# MediaFileMetadataCheckerAPI
 - [MediaFileMetadataCheckerAPI](#mediafilemetadatacheckerapi)
   - [Local testing (dotnet native)](#local-testing-dotnet-native)
   - [Local testing (docker)](#local-testing-docker)
@@ -5,7 +6,6 @@
 - [Terraform](#terraform)
   - [Running Terraform](#running-terraform)
 
-# MediaFileMetadataCheckerAPI
 Basic containerized MVC app written in C#. Infrastructure automation for cloud app configuration written in Terraform.
 
 Takes an uploaded user file, runs FFProbe on it, and returns some of the metadata as a JSON payload.
