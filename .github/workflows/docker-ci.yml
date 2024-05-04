@@ -35,6 +35,7 @@ jobs:
           scan-type: image
           hide-progress: true
       - name: Test running image
+        shell: bash  
         run: |
           SECONDS=0
           while [ $SECONDS -lt 30 ]; do
